@@ -14,6 +14,10 @@
 		F45FF9661B4537DE009C581C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F45FF9651B4537DE009C581C /* Images.xcassets */; };
 		F45FF9691B4537DE009C581C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F45FF9671B4537DE009C581C /* LaunchScreen.xib */; };
 		F45FF9751B4537DE009C581C /* SKRAttributedStringCreatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F45FF9741B4537DE009C581C /* SKRAttributedStringCreatorTests.m */; };
+		F45FF9821B453803009C581C /* SKRAttributedStringCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = F45FF97F1B453803009C581C /* SKRAttributedStringCreator.m */; };
+		F45FF9831B453803009C581C /* SKRAttributedStringCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = F45FF97F1B453803009C581C /* SKRAttributedStringCreator.m */; };
+		F45FF9841B453803009C581C /* SKRAttributedStringTagRange.m in Sources */ = {isa = PBXBuildFile; fileRef = F45FF9811B453803009C581C /* SKRAttributedStringTagRange.m */; };
+		F45FF9851B453803009C581C /* SKRAttributedStringTagRange.m in Sources */ = {isa = PBXBuildFile; fileRef = F45FF9811B453803009C581C /* SKRAttributedStringTagRange.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +44,10 @@
 		F45FF96E1B4537DE009C581C /* SKRAttributedStringCreatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKRAttributedStringCreatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45FF9731B4537DE009C581C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F45FF9741B4537DE009C581C /* SKRAttributedStringCreatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKRAttributedStringCreatorTests.m; sourceTree = "<group>"; };
+		F45FF97E1B453803009C581C /* SKRAttributedStringCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRAttributedStringCreator.h; sourceTree = "<group>"; };
+		F45FF97F1B453803009C581C /* SKRAttributedStringCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRAttributedStringCreator.m; sourceTree = "<group>"; };
+		F45FF9801B453803009C581C /* SKRAttributedStringTagRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRAttributedStringTagRange.h; sourceTree = "<group>"; };
+		F45FF9811B453803009C581C /* SKRAttributedStringTagRange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRAttributedStringTagRange.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +89,10 @@
 		F45FF9571B4537DE009C581C /* SKRAttributedStringCreator */ = {
 			isa = PBXGroup;
 			children = (
+				F45FF97E1B453803009C581C /* SKRAttributedStringCreator.h */,
+				F45FF97F1B453803009C581C /* SKRAttributedStringCreator.m */,
+				F45FF9801B453803009C581C /* SKRAttributedStringTagRange.h */,
+				F45FF9811B453803009C581C /* SKRAttributedStringTagRange.m */,
 				F45FF95C1B4537DE009C581C /* AppDelegate.h */,
 				F45FF95D1B4537DE009C581C /* AppDelegate.m */,
 				F45FF95F1B4537DE009C581C /* ViewController.h */,
@@ -219,9 +231,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F45FF9821B453803009C581C /* SKRAttributedStringCreator.m in Sources */,
 				F45FF9611B4537DE009C581C /* ViewController.m in Sources */,
 				F45FF95E1B4537DE009C581C /* AppDelegate.m in Sources */,
 				F45FF95B1B4537DE009C581C /* main.m in Sources */,
+				F45FF9841B453803009C581C /* SKRAttributedStringTagRange.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +243,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F45FF9851B453803009C581C /* SKRAttributedStringTagRange.m in Sources */,
+				F45FF9831B453803009C581C /* SKRAttributedStringCreator.m in Sources */,
 				F45FF9751B4537DE009C581C /* SKRAttributedStringCreatorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

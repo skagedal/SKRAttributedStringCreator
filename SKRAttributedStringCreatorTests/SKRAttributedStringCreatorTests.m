@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "SKRAttributedStringCreator.h"
 
 @interface SKRAttributedStringCreatorTests : XCTestCase
 
@@ -25,9 +26,20 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    XCTAssert(YES, @"Pass");
+- (void)testSKRASC {
+    NSDictionary *myTags = @{@"red": @{NSForegroundColorAttributeName: [UIColor redColor]},
+                             @"green": @{NSForegroundColorAttributeName: [UIColor greenColor]},
+                             @"blue": @{NSForegroundColorAttributeName: [UIColor blueColor]}
+                             };
+    SKRAttributedStringCreator *maker = [[SKRAttributedStringCreator alloc] initWithTags:myTags];
+    XCTAssertNotNil(maker);
+    NSString *template = @"here's #red{red} and #green<green> and #blue[blue]";
+    NSAttributedString *as = [maker attributedStringFromTemplate:template];
+    XCTAssertEqualObjects(as.string, @"here's red and green and blue");
+    XCTAssertEqualObjects([as attribute:NSForegroundColorAttributeName atIndex:7 effectiveRange:nil],
+                          [UIColor redColor]);
+    XCTAssertEqualObjects([as attribute:NSForegroundColorAttributeName atIndex:16 effectiveRange:nil],
+                          [UIColor greenColor]);
 }
 
 - (void)testPerformanceExample {
