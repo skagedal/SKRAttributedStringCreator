@@ -11,7 +11,6 @@
 
 @interface SKRAttributedStringCreator ()
 
-@property (nonatomic) unichar escapeChar;
 @property (strong, nonatomic) NSDictionary *tags;
 @property (strong, readonly, nonatomic) NSMutableSet *tagPrefixes;
 
@@ -22,23 +21,16 @@
 @synthesize tagPrefixes = _tagPrefixes;
 
 - (instancetype)initWithTags:(NSDictionary *)tags
-             escapeCharacter:(unichar)escapeChar
+                      prefix:(NSString *)prefix
 {
     self = [super init];
-    if (self) {
-        if ([self checkValidTags:tags escapeCharacter:escapeChar]) {
-            self.escapeChar = escapeChar;
-            self.tags = tags;
-        } else {
-            self = nil;
-        }
-    }
+    [self buildTags:tags prefix:prefix];
     return self;
 }
 
 - (instancetype)initWithTags:(NSDictionary *)tags
 {
-    return [self initWithTags:tags escapeCharacter:'#'];
+    return [self initWithTags:tags prefix:@"#"];
 }
 
 static NSSet *allPrefixesOfString (NSString *s)
@@ -56,7 +48,7 @@ static NSCharacterSet *openingBraces()
     static dispatch_once_t onceToken;
     
     dispatch_once (&onceToken, ^{
-        set = [NSCharacterSet characterSetWithCharactersInString:@"<{[("];
+        set = [NSCharacterSet characterSetWithCharactersInString:@"<{[(⟦"];
     });
 
     return set;
@@ -67,29 +59,30 @@ static bool isOpeningBrace(unichar c)
     return [openingBraces() characterIsMember:c];
 }
 
-
-
-- (BOOL)checkValidTags:(NSDictionary *)tags
-       escapeCharacter:(unichar)escapeChar {
+- (void)buildTags:(NSDictionary *)tags
+           prefix:(NSString *)prefix
+{
+    NSMutableDictionary *buildTags = [NSMutableDictionary new];
     
-    NSString *escapeString = [NSString stringWithFormat:@"%C", escapeChar];
-    for (id keyObj in [tags allKeys]) {
-        if (![keyObj isKindOfClass:[NSString class]]) {
+    for (id key in [tags allKeys]) {
+        if (![key isKindOfClass:[NSString class]]) {
             [NSException raise:NSInvalidArgumentException
-                        format:@"Tags must have string keys, got: %@", keyObj];
+                        format:@"Tags must have string keys, got: %@", key];
         }
-        NSString *key = keyObj;
-        if ([key rangeOfCharacterFromSet:openingBraces()].location != NSNotFound) {
+        NSString *newKey = [prefix stringByAppendingString:key];
+        if ([newKey rangeOfCharacterFromSet:openingBraces()].location != NSNotFound) {
             [NSException raise:NSInvalidArgumentException
-                        format:@"Invalid tag: %@ - cannot contain symbols used for opening braces", key];
+                        format:@"Invalid tag: %@ - can not contain opening braces", newKey];
         }
-        if ([key rangeOfString:escapeString].location != NSNotFound) {
-            [NSException raise:NSInvalidArgumentException
-                        format:@"Invalid tag: %@ - cannot contain escape character", key];
-        }
+//        if (newKey.length == 0) {
+//            [NSException raise:NSInvalidArgumentException
+//                        format:@"Tags can not be the empty string"];
+//        }
+        
+        buildTags[newKey] = tags[key];
     }
 
-    return YES;
+    self.tags = buildTags;
 }
 
 - (NSMutableSet *)tagPrefixes {
@@ -103,6 +96,31 @@ static bool isOpeningBrace(unichar c)
     return _tagPrefixes;
 }
 
+- (SKRAttributedStringTagRange *)parseStartTagFromString:(NSString *)string
+                                                 atIndex:(NSUInteger)index
+{
+    NSMutableString *tag = [NSMutableString new];
+    NSUInteger length = [string length];
+    for (NSUInteger i = index; i < length; i++) {
+        unichar c = [string characterAtIndex:i];
+        if (isOpeningBrace(c)) {
+            if (self.tags[tag]) {
+                SKRAttributedStringTagRange *tagRange;
+                tagRange = [[SKRAttributedStringTagRange alloc]
+                            initWithTag:tag
+                            openingBrace:c];
+                return tagRange;
+            }
+            break;
+        }
+        [tag appendFormat:@"%C", c];
+        if (![self.tagPrefixes containsObject:tag]) {
+            break;
+        }
+    }
+    return nil;
+}
+
 - (void)parseTemplate:(NSString *)template
              toString:(NSString **)outputPointer
          andTagRanges:(NSArray **)tagRangesPointer
@@ -110,70 +128,28 @@ static bool isOpeningBrace(unichar c)
     NSAssert(outputPointer, @"Output string can't be nil");
     NSAssert(tagRangesPointer, @"tagRanges can't be nil");
     
-    // The result of parsing
     NSMutableString *output = [NSMutableString new];
-    NSMutableArray *tagRangesInOrder = [NSMutableArray new]; // of SKRAttributedStringTemplateParserInfo
+    NSMutableArray *tagRangesInOrder = [NSMutableArray new]; // of SKRAttributedStringTagRange
     
-    // Parser state variables
-    enum {
-        kParserStateNormal,
-        kParserStateReadingOpenTag
-    } state = kParserStateNormal;
-    NSMutableArray *tagRangesStack = [NSMutableArray new];  // of SKRAttributedStringTemplateParserInfo
-    NSMutableString *currentlyParsedTag;
+    NSMutableArray *tagRangesStack = [NSMutableArray new];  // of SKRAttributedStringTagRange
     
     NSUInteger length = [template length];
     for (NSUInteger i = 0; i < length; i++) {
-        unichar c = [template characterAtIndex:i];
-        SKRAttributedStringTagRange *currentTagRange = tagRangesStack.lastObject;
-        switch (state) {
-            case kParserStateNormal:
-                if (c == self.escapeChar) {
-                    currentlyParsedTag = [NSMutableString new];
-                    state = kParserStateReadingOpenTag;
-                } else if (currentTagRange && c == currentTagRange.closingBrace) {
-                    [currentTagRange closeAtLocation:output.length];
-                    [tagRangesStack removeLastObject];
-                } else {
-                    [output appendFormat:@"%C", c];
-                }
-                break;
-                
-            case kParserStateReadingOpenTag:
-                if (isOpeningBrace(c)) {
-                    if (self.tags[currentlyParsedTag]) {
-                        SKRAttributedStringTagRange *tagRange =
-                        [[SKRAttributedStringTagRange alloc]
-                         initWithTag:currentlyParsedTag
-                         openingBrace:c];
-                        [tagRange openAtLocation:output.length];
-                        [tagRangesStack addObject:tagRange];
-                        [tagRangesInOrder addObject:tagRange];
-                        
-                        state = kParserStateNormal;
-                    } else {
-                        // Wrong end, output parsed input
-                        [output appendFormat:@"%C%@%C", self.escapeChar, currentlyParsedTag, c];
-                        state = kParserStateNormal;
-                    }
-                } else if (c == self.escapeChar) {
-                    // Start over
-                    [output appendFormat:@"%C%@", self.escapeChar, currentlyParsedTag];
-                    currentlyParsedTag = [NSMutableString new];
-                } else {
-                    [currentlyParsedTag appendFormat:@"%C", c];
-                    if (![self.tagPrefixes containsObject:currentlyParsedTag]) {
-                        // Wrong end, output parsed input
-                        [output appendFormat:@"%C%@", self.escapeChar, currentlyParsedTag];
-                        state = kParserStateNormal;
-                    }
-                }
-            default:
-                break;
+        SKRAttributedStringTagRange *topTagRange = tagRangesStack.lastObject;
+        SKRAttributedStringTagRange *tagRange;
+        tagRange = [self parseStartTagFromString:template atIndex:i];
+        if (tagRange) {
+            [tagRange openAtLocation:output.length];
+            [tagRangesStack addObject:tagRange];
+            [tagRangesInOrder addObject:tagRange];
+            i += [tagRange.tag length];
+        } else if ([template characterAtIndex:i] == topTagRange.closingBrace) {
+            [topTagRange closeAtLocation:output.length];
+            [tagRangesStack removeLastObject];
+        } else {
+            NSString *oneChar = [template substringWithRange:NSMakeRange(i, 1)];
+            [output appendString:oneChar];
         }
-    }
-    if (state == kParserStateReadingOpenTag) {
-        [output appendFormat:@"%C%@", self.escapeChar, currentlyParsedTag];
     }
     // Auto-close all open tags
     SKRAttributedStringTagRange *tagRange;

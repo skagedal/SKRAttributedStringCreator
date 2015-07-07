@@ -23,7 +23,8 @@
     if (!_asCreator) {
         NSDictionary *tags = @{@"red": @{NSForegroundColorAttributeName: [UIColor redColor]},
                                @"green": @{NSForegroundColorAttributeName: [UIColor greenColor]},
-                               @"blue": @{NSForegroundColorAttributeName: [UIColor blueColor]},
+                               @"sweden": @{NSForegroundColorAttributeName: [UIColor yellowColor],
+                                            NSBackgroundColorAttributeName: [UIColor blueColor]},
                                @"U": @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)}
                                };
 
@@ -35,19 +36,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
     
+    NSString *template = @"#red{Red} and #green(green). #green<#U<Nice!>>";
+    self.templateEditor.text = template;
+    [self updateTemplate:template];
+
     self.templateEditor.delegate = self;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewDidLayoutSubviews
+{
+    [self.outputLabel sizeToFit];
+}
+
+- (void)updateTemplate:(NSString *)template
+{
+    self.outputLabel.attributedText = [self.asCreator attributedStringFromTemplate:template];
+//     [self.outputLabel sizeToFit];
 }
 
 - (void)textViewDidChange:(UITextView *)textView
 {
-    self.outputLabel.attributedText = [self.asCreator attributedStringFromTemplate:textView.text];
+    [self updateTemplate:textView.text];
 }
 
 @end

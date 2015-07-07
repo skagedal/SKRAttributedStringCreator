@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F445EC6D1B4C5CA9002D73A4 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = F445EC6C1B4C5CA9002D73A4 /* README.md */; };
 		F45FF95B1B4537DE009C581C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F45FF95A1B4537DE009C581C /* main.m */; };
 		F45FF95E1B4537DE009C581C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F45FF95D1B4537DE009C581C /* AppDelegate.m */; };
 		F45FF9611B4537DE009C581C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F45FF9601B4537DE009C581C /* ViewController.m */; };
@@ -31,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F445EC6C1B4C5CA9002D73A4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F45FF9551B4537DE009C581C /* SKRAttributedStringCreator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKRAttributedStringCreator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45FF9591B4537DE009C581C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F45FF95A1B4537DE009C581C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 		F45FF94C1B4537DE009C581C = {
 			isa = PBXGroup;
 			children = (
+				F445EC6C1B4C5CA9002D73A4 /* README.md */,
 				F45FF9571B4537DE009C581C /* SKRAttributedStringCreator */,
 				F45FF9711B4537DE009C581C /* SKRAttributedStringCreatorTests */,
 				F45FF9561B4537DE009C581C /* Products */,
@@ -231,6 +234,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F445EC6D1B4C5CA9002D73A4 /* README.md in Sources */,
 				F45FF9821B453803009C581C /* SKRAttributedStringCreator.m in Sources */,
 				F45FF9611B4537DE009C581C /* ViewController.m in Sources */,
 				F45FF95E1B4537DE009C581C /* AppDelegate.m in Sources */,
@@ -434,6 +438,7 @@
 				F45FF97A1B4537DE009C581C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F45FF97B1B4537DE009C581C /* Build configuration list for PBXNativeTarget "SKRAttributedStringCreatorTests" */ = {
 			isa = XCConfigurationList;
@@ -442,6 +447,7 @@
 				F45FF97D1B4537DE009C581C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -11,7 +11,7 @@
 @interface SKRAttributedStringCreator : NSObject
 
 - (instancetype)initWithTags:(NSDictionary *)tags
-             escapeCharacter:(unichar)escape;
+                      prefix:(NSString *)prefix;
 
 - (instancetype)initWithTags:(NSDictionary *)tags;
 

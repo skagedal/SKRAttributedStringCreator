@@ -39,6 +39,8 @@ static unichar closingBraceForOpeningBrace(unichar openingBrace)
             return ']';
         case '(':
             return ')';
+        case 0x27E6:       // ⟦
+            return 0x27E7; // ⟧
     }
     assert(0);
     return 0;
